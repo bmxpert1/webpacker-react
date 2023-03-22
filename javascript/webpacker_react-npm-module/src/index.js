@@ -11,6 +11,7 @@ const PROPS_ATTRIBUTE_NAME = 'data-react-props'
 
 const WebpackerReact = {
   registeredComponents: {},
+  renderedRoots: [],
 
   render(node, component) {
     const propsJson = node.getAttribute(PROPS_ATTRIBUTE_NAME)
@@ -20,6 +21,7 @@ const WebpackerReact = {
     const root = createRoot(node)
 
     root.render(reactElement)
+    this.renderedRoots.push(root);
   },
 
   registerComponents(components) {
@@ -33,10 +35,10 @@ const WebpackerReact = {
   },
 
   unmountComponents() {
-    const mounted = document.querySelectorAll(`[${CLASS_ATTRIBUTE_NAME}]`)
-    for (let i = 0; i < mounted.length; i += 1) {
-      mounted[i].unmount()
+    for (let i = 0; i < this.renderedRoots.length; i++) {
+      this.renderedRoots[i].unmount();
     }
+    this.renderedRoots = [];
   },
 
   mountComponents() {
